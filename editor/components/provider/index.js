@@ -23,19 +23,22 @@ import { setupEditor, undo } from '../../store/actions';
 import store from '../../store';
 
 /**
- * The default editor settings
- * You can override any default settings when calling createEditorInstance
+ * Default editor settings
  *
- *  wideImages   boolean   Enable/Disable Wide/Full Alignments
+ * Default settings can be overridden when calling createEditorInstance
+ *
+ * wideImages {Boolean}            Whether wide/full alignments are available
+ * maxWidth   {Number}             Max width of the block inner area, used to
+ *                                 constrain image resizing
+ * blockTypes {(Boolean|String[])} Allowed block types, defaulting to true (all
+ *                                 block types allowed)
  *
  * @var {Object} DEFAULT_SETTINGS
  */
 const DEFAULT_SETTINGS = {
 	wideImages: false,
-
-	// This is current max width of the block inner area
-	// It's used to constraint image resizing and this value could be overriden later by themes
 	maxWidth: 608,
+	blockTypes: true,
 };
 
 class EditorProvider extends Component {
