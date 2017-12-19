@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { some } from 'lodash';
+import { some, intersection, uniq } from 'lodash';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 
@@ -11,14 +11,25 @@ import classnames from 'classnames';
 import { __, sprintf } from '@wordpress/i18n';
 import { IconButton, withContext } from '@wordpress/components';
 import { Component, compose } from '@wordpress/element';
-import { createBlock, BlockIcon } from '@wordpress/blocks';
+import { getBlockType, createBlock, BlockIcon } from '@wordpress/blocks';
 
 /**
  * Internal dependencies
  */
 import { Inserter } from '../../../components';
 import { insertBlock } from '../../../store/actions';
-import { getMostFrequentlyUsedBlocks, getBlockCount, getBlocks } from '../../../store/selectors';
+import {
+	getMostFrequentlyUsedBlockNames,
+	getBlockCount,
+	getBlocks,
+} from '../../../store/selectors';
+
+/**
+ * Maximum number of frequently used blocks to display.
+ *
+ * @type {Number}
+ */
+const MAX_FREQUENT_BLOCKS = 3;
 
 export class VisualEditorInserter extends Component {
 	constructor() {
@@ -45,10 +56,42 @@ export class VisualEditorInserter extends Component {
 		return block.useOnce && some( this.props.blocks, ( { name } ) => block.name === name );
 	}
 
+	getFrequentlyUsedBlocks() {
+		const { frequentlyUsedBlockNames = [], allowedBlockTypes = true } = this.props;
+
+		// Pad frequently used blocks with Paragraph / Image if undefined
+		const blocksWithDefaults = [
+			...frequentlyUsedBlockNames,
+			'core/paragraph',
+			'core/image',
+		];
+
+		// Limit blocks to allowed if defined as array set, otherwise dedupe
+		// padded types
+		const blocks = Array.isArray( allowedBlockTypes ) ?
+			intersection( blocksWithDefaults, allowedBlockTypes ) :
+			uniq( blocksWithDefaults );
+
+		return blocks.reduce( ( result, name ) => {
+			let blockType;
+			if (
+				// Limit to maximum desired set size
+				result.length < MAX_FREQUENT_BLOCKS &&
+
+				// Since a frequently used block may be deactivated, verify
+				// block type returns truthy before including in set
+				( blockType = getBlockType( name ) )
+			) {
+				result.push( blockType );
+			}
+
+			return result;
+		}, [] );
+	}
+
 	render() {
 		const { blockCount, isLocked } = this.props;
 		const { isShowingControls } = this.state;
-		const { mostFrequentlyUsedBlocks } = this.props;
 		const classes = classnames( 'editor-visual-editor__inserter', {
 			'is-showing-controls': isShowingControls,
 		} );
@@ -66,7 +109,7 @@ export class VisualEditorInserter extends Component {
 				<Inserter
 					insertIndex={ blockCount }
 					position="top right" />
-				{ mostFrequentlyUsedBlocks && mostFrequentlyUsedBlocks.map( ( block ) => (
+				{ this.getFrequentlyUsedBlocks().map( ( block ) => (
 					<IconButton
 						key={ 'frequently_used_' + block.name }
 						className="editor-inserter__block"
@@ -91,7 +134,7 @@ export default compose(
 	connect(
 		( state ) => {
 			return {
-				mostFrequentlyUsedBlocks: getMostFrequentlyUsedBlocks( state ),
+				frequentlyUsedBlockNames: getMostFrequentlyUsedBlockNames( state ),
 				blockCount: getBlockCount( state ),
 				blocks: getBlocks( state ),
 			};
@@ -99,10 +142,11 @@ export default compose(
 		{ onInsertBlock: insertBlock },
 	),
 	withContext( 'editor' )( ( settings ) => {
-		const { templateLock } = settings;
+		const { templateLock, blockTypes } = settings;
 
 		return {
 			isLocked: !! templateLock,
+			allowedBlockTypes: blockTypes,
 		};
 	} ),
 )( VisualEditorInserter );

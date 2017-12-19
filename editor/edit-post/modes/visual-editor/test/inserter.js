@@ -2,11 +2,12 @@
  * External dependencies
  */
 import { shallow } from 'enzyme';
+import { noop } from 'lodash';
 
 /**
  * WordPress dependencies
  */
-import { getBlockType } from '@wordpress/blocks';
+import { registerBlockType, getBlockTypes, unregisterBlockType } from '@wordpress/blocks';
 
 /**
  * Internal dependencies
@@ -14,6 +15,26 @@ import { getBlockType } from '@wordpress/blocks';
 import { VisualEditorInserter } from '../inserter';
 
 describe( 'VisualEditorInserter', () => {
+	beforeAll( () => {
+		registerBlockType( 'core/foo', {
+			title: 'Foo',
+			category: 'common',
+			save: noop,
+		} );
+
+		registerBlockType( 'core/bar', {
+			title: 'Bar',
+			category: 'common',
+			save: noop,
+		} );
+	} );
+
+	afterAll( () => {
+		getBlockTypes().forEach( block => {
+			unregisterBlockType( block.name );
+		} );
+	} );
+
 	it( 'should show controls when receiving focus', () => {
 		const wrapper = shallow( <VisualEditorInserter /> );
 
@@ -31,18 +52,55 @@ describe( 'VisualEditorInserter', () => {
 		expect( wrapper.state( 'isShowingControls' ) ).toBe( false );
 	} );
 
+	it( 'should display frequently used blocks', () => {
+		const onInsertBlock = jest.fn();
+		const wrapper = shallow(
+			<VisualEditorInserter
+				onInsertBlock={ onInsertBlock }
+				frequentlyUsedBlockNames={ [ 'core/foo', 'core/bar' ] } />
+		);
+
+		const buttons = wrapper.find( 'IconButton' );
+		expect( buttons ).toHaveLength( 3 );
+		expect( buttons.at( 0 ).children().text() ).toBe( 'Foo' );
+		expect( buttons.at( 1 ).children().text() ).toBe( 'Bar' );
+		expect( buttons.at( 2 ).children().text() ).toBe( 'Paragraph' );
+	} );
+
+	it( 'should omit non-existing frequently used block', () => {
+		const onInsertBlock = jest.fn();
+		const wrapper = shallow(
+			<VisualEditorInserter
+				onInsertBlock={ onInsertBlock }
+				frequentlyUsedBlockNames={ [ 'core/foo', 'core/bar', 'core/qux' ] } />
+		);
+
+		const buttons = wrapper.find( 'IconButton' );
+		expect( buttons ).toHaveLength( 3 );
+		expect( buttons.at( 0 ).children().text() ).toBe( 'Foo' );
+		expect( buttons.at( 1 ).children().text() ).toBe( 'Bar' );
+		expect( buttons.at( 2 ).children().text() ).toBe( 'Paragraph' );
+	} );
+
+	it( 'should omit unallowed frequently used block', () => {
+		const onInsertBlock = jest.fn();
+		const wrapper = shallow(
+			<VisualEditorInserter
+				onInsertBlock={ onInsertBlock }
+				frequentlyUsedBlockNames={ [ 'core/foo', 'core/bar', 'core/qux' ] }
+				allowedBlockTypes={ [ 'core/foo' ] } />
+		);
+
+		const buttons = wrapper.find( 'IconButton' );
+		expect( buttons ).toHaveLength( 1 );
+		expect( buttons.at( 0 ).children().text() ).toBe( 'Foo' );
+	} );
+
 	it( 'should insert frequently used blocks', () => {
 		const onInsertBlock = jest.fn();
-		const mostFrequentlyUsedBlocks = [ getBlockType( 'core/paragraph' ), getBlockType( 'core/image' ) ];
 		const wrapper = shallow(
-			<VisualEditorInserter onInsertBlock={ onInsertBlock } mostFrequentlyUsedBlocks={ mostFrequentlyUsedBlocks } />
+			<VisualEditorInserter onInsertBlock={ onInsertBlock } />
 		);
-		wrapper.state.preferences = {
-			blockUsage: {
-				'core/paragraph': 42,
-				'core/image': 34,
-			},
-		};
 
 		wrapper
 			.findWhere( ( node ) => node.prop( 'children' ) === 'Paragraph' )

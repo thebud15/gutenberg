@@ -69,7 +69,7 @@ import {
 	didPostSaveRequestFail,
 	getSuggestedPostFormat,
 	getNotices,
-	getMostFrequentlyUsedBlocks,
+	getMostFrequentlyUsedBlockNames,
 	getRecentlyUsedBlocks,
 	getMetaBoxes,
 	getDirtyMetaBoxes,
@@ -2133,22 +2133,11 @@ describe( 'selectors', () => {
 		} );
 	} );
 
-	describe( 'getMostFrequentlyUsedBlocks', () => {
-		it( 'should have paragraph and image to bring frequently used blocks up to three blocks', () => {
-			const noUsage = { preferences: { blockUsage: {} } };
-			const someUsage = { preferences: { blockUsage: { 'core/paragraph': 1 } } };
-
-			expect( getMostFrequentlyUsedBlocks( noUsage ).map( ( block ) => block.name ) )
-				.toEqual( [ 'core/paragraph', 'core/image' ] );
-
-			expect( getMostFrequentlyUsedBlocks( someUsage ).map( ( block ) => block.name ) )
-				.toEqual( [ 'core/paragraph', 'core/image' ] );
-		} );
+	describe( 'getMostFrequentlyUsedBlockNames', () => {
 		it( 'should return the top 3 most recently used blocks', () => {
 			const state = {
 				preferences: {
 					blockUsage: {
-						'core/deleted-block': 20,
 						'core/paragraph': 4,
 						'core/image': 11,
 						'core/quote': 2,
@@ -2157,8 +2146,12 @@ describe( 'selectors', () => {
 				},
 			};
 
-			expect( getMostFrequentlyUsedBlocks( state ).map( ( block ) => block.name ) )
-				.toEqual( [ 'core/image', 'core/paragraph', 'core/quote' ] );
+			expect( getMostFrequentlyUsedBlockNames( state ) ).toEqual( [
+				'core/image',
+				'core/paragraph',
+				'core/quote',
+				'core/gallery',
+			] );
 		} );
 	} );
 
