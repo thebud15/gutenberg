@@ -13,6 +13,22 @@
 	&.is-transient img {
 		@include loading_fade;
 	}
+
+	.block-editable__inline-toolbar {
+		margin-top: -1.8em;
+	}
+
+	.blocks-editable, .blocks-editable__tinymce:not(.mce-content-body) {
+		position: absolute;
+		width: 100%;
+	}
+
+	.is-selected .blocks-editable {
+		width: calc( 100% - 8px );
+		left: 4px;
+		margin-top: -4px;
+	}
+
 }
 
 .blocks-gallery-item__inline-menu {

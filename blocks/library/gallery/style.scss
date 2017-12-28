@@ -14,15 +14,27 @@
 		flex-direction: column;
 		justify-content: center;
 
+
 		figure {
-			height: 100%;
 			margin: 0;
+			height: 100%;
 		}
 
 		img {
 			display: block;
 			max-width: 100%;
 			height: auto;
+		}
+
+		figcaption {
+			top: -30px;
+			padding-top: 3px;
+			height: 30px;
+			color: $white;
+			text-align: center;
+			font-size: $default-font-size;
+			background-color: rgba($color: $black, $alpha: 0.7);
+			position: relative;
 		}
 	}
 
