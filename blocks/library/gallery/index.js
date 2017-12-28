@@ -26,20 +26,28 @@ const blockAttributes = {
 		type: 'array',
 		default: [],
 		source: 'query',
-		selector: 'ul.wp-block-gallery .blocks-gallery-item img',
+		selector: 'ul.wp-block-gallery .blocks-gallery-item',
 		query: {
 			url: {
 				source: 'attribute',
+				selector: 'img',
 				attribute: 'src',
 			},
 			alt: {
 				source: 'attribute',
+				selector: 'img',
 				attribute: 'alt',
 				default: '',
 			},
 			id: {
 				source: 'attribute',
+				selector: 'img',
 				attribute: 'data-id',
+			},
+			caption: {
+				type: 'array',
+				source: 'children',
+				selector: 'figcaption',
 			},
 		},
 	},
@@ -183,6 +191,7 @@ export const settings = {
 						<li key={ image.id || image.url } className="blocks-gallery-item">
 							<figure>
 								{ href ? <a href={ href }>{ img }</a> : img }
+								{ image.caption && image.caption.length > 0 && <figcaption>{ image.caption }</figcaption> }
 							</figure>
 						</li>
 					);
