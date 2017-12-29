@@ -23,6 +23,10 @@ registerBlockType( 'core/image', {
 
 	keywords: [ __( 'photo' ) ],
 
+	supports: {
+		notices: true,
+	},
+
 	attributes: {
 		url: {
 			type: 'string',

@@ -16,16 +16,25 @@ import MediaUploadButton from '../media-upload-button';
  * @param   {Object} props  React props passed to the component.
  * @returns {Object}        Rendered placeholder.
  */
-export default function ImagePlaceHolder( { className, icon, label, onSelectImage } ) {
+export default function ImagePlaceHolder( { className, icon, label, onSelectImage, notices, onError } ) {
 	const setImage = ( [ image ] ) => onSelectImage( image );
-	const dropFiles = ( files ) => mediaUpload( files, setImage );
-	const uploadFromFiles = ( event ) => mediaUpload( event.target.files, setImage );
+	const dropFiles = ( files ) => mediaUpload( {
+		filesList: files,
+		onImagesChange: setImage,
+		onError,
+	} );
+	const uploadFromFiles = ( event ) => mediaUpload( {
+		filesList: event.target.files,
+		onImagesChange: setImage,
+		onError,
+	} );
 	return (
 		<Placeholder
 			className={ className }
 			instructions={ __( 'Drag image here or add from media library' ) }
 			icon={ icon }
-			label={ label } >
+			label={ label }
+			notices={ notices } >
 			<DropZone
 				onFilesDrop={ dropFiles }
 			/>

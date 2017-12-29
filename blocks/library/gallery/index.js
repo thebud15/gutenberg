@@ -62,6 +62,10 @@ registerBlockType( 'core/gallery', {
 		},
 	},
 
+	supports: {
+		notices: true,
+	},
+
 	transforms: {
 		from: [
 			{

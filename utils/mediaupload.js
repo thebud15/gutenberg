@@ -1,7 +1,12 @@
 /**
  * External Dependencies
  */
-import { compact } from 'lodash';
+import { compact, noop } from 'lodash';
+
+/**
+ * WordPress dependencies
+ */
+import { __, sprintf } from '@wordpress/i18n';
 
 /**
  *	Media Upload is used by image and gallery blocks to handle uploading an image
@@ -12,7 +17,11 @@ import { compact } from 'lodash';
  * @param  {Array}    filesList       List of files.
  * @param  {Function} onImagesChange  Function to be called each time a file or a temporary representation of the file is available.
  */
-export function mediaUpload( filesList, onImagesChange ) {
+export function mediaUpload( {
+	filesList,
+	onImagesChange,
+	onError = noop,
+} ) {
 	// Cast filesList to array
 	const files = [ ...filesList ];
 
@@ -37,9 +46,13 @@ export function mediaUpload( filesList, onImagesChange ) {
 				setAndUpdateImages( idx, { id: savedMedia.id, url: savedMedia.source_url } );
 			},
 			() => {
-				// Reset to empty on failure.
-				// TODO: Better failure messaging
 				setAndUpdateImages( idx, null );
+				onError(
+					sprintf(
+						__( 'Error while uploading file %s to the media library.' ),
+						mediaFile.name
+					)
+				);
 			}
 		);
 	} );

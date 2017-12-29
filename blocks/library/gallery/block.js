@@ -94,8 +94,12 @@ class GalleryBlock extends Component {
 	}
 
 	uploadFromFiles( event ) {
-		mediaUpload( event.target.files, ( images ) => {
-			this.props.setAttributes( { images } );
+		mediaUpload( {
+			filesList: event.target.files,
+			onImagesChange: ( images ) => {
+				this.props.setAttributes( { images } );
+			},
+			onError: this.props.notices.createErrorNotice,
 		} );
 	}
 
@@ -117,14 +121,15 @@ class GalleryBlock extends Component {
 	dropFiles( files ) {
 		const currentImages = this.props.attributes.images || [];
 		const { setAttributes } = this.props;
-		mediaUpload(
-			files,
-			( images ) => {
+		mediaUpload( {
+			filesList: files,
+			onImagesChange: ( images ) => {
 				setAttributes( {
 					images: currentImages.concat( images ),
 				} );
-			}
-		);
+			},
+			onError: this.props.notices.createErrorNotice,
+		} );
 	}
 
 	componentWillReceiveProps( nextProps ) {
@@ -137,7 +142,7 @@ class GalleryBlock extends Component {
 	}
 
 	render() {
-		const { attributes, focus, className } = this.props;
+		const { attributes, focus, className, notices } = this.props;
 		const { images, columns = defaultColumnsNumber( attributes ), align, imageCrop, linkTo } = attributes;
 
 		const dropZone = (
@@ -186,6 +191,7 @@ class GalleryBlock extends Component {
 					instructions={ __( 'Drag images here or add from media library' ) }
 					icon="format-gallery"
 					label={ __( 'Gallery' ) }
+					notices={ notices.UI }
 					className={ className }>
 					{ dropZone }
 					<FormFileUpload
@@ -236,6 +242,7 @@ class GalleryBlock extends Component {
 				</InspectorControls>
 			),
 			<div key="gallery" className={ `${ className } align${ align } columns-${ columns } ${ imageCrop ? 'is-cropped' : '' }` }>
+				{ notices.UI }
 				{ dropZone }
 				{ images.map( ( img, index ) => (
 					<GalleryImage

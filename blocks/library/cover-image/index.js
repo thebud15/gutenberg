@@ -61,6 +61,10 @@ registerBlockType( 'core/cover-image', {
 		},
 	},
 
+	supports: {
+		notices: true,
+	},
+
 	transforms: {
 		from: [
 			{
@@ -89,10 +93,9 @@ registerBlockType( 'core/cover-image', {
 		}
 	},
 
-	edit( { attributes, setAttributes, focus, setFocus, className } ) {
+	edit( { attributes, setAttributes, focus, setFocus, className, notices } ) {
 		const { url, title, align, id, hasParallax, dimRatio } = attributes;
 		const updateAlignment = ( nextAlign ) => setAttributes( { align: nextAlign } );
-		const onSelectImage = ( media ) => setAttributes( { url: media.url, id: media.id } );
 		const onSelectImage = ( media ) => ! media ?
 			setAttributes( { url: undefined, id: undefined } ) :
 			setAttributes( { url: media.url, id: media.id } );
@@ -169,13 +172,15 @@ registerBlockType( 'core/cover-image', {
 			return [
 				controls,
 				<ImagePlaceHolder key="cover-image-placeholder"
-					{ ...{ className, icon, label, onSelectImage } }
+					{ ...{ className, icon, label, onSelectImage, notices: notices.UI } }
+					onError={ notices.createErrorNotice }
 				/>,
 			];
 		}
 
 		return [
 			controls,
+			notices.UI,
 			<section
 				key="preview"
 				data-url={ url }

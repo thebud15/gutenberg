@@ -29,12 +29,12 @@ describe( 'mediaUpload', () => {
 	} );
 
 	it( 'should do nothing on no files', () => {
-		mediaUpload( [ ], onImagesChange );
+		mediaUpload( { filesList: [ ], onImagesChange } );
 		expect( console.error ).not.toHaveBeenCalled();
 	} );
 
 	it( 'should do nothing on invalid image type', () => {
-		mediaUpload( [ invalidMediaObj ], onImagesChange );
+		mediaUpload( { filesList: [ invalidMediaObj ], onImagesChange } );
 		expect( console.error ).not.toHaveBeenCalled();
 	} );
 } );
