@@ -1,7 +1,7 @@
 /**
  * External Dependencies
  */
-import { compact, noop } from 'lodash';
+import { compact, get, noop } from 'lodash';
 
 /**
  * WordPress dependencies
@@ -12,15 +12,19 @@ import { __, sprintf } from '@wordpress/i18n';
  *	Media Upload is used by image and gallery blocks to handle uploading an image
  *	when a file upload button is activated.
  *
- *	TODO: future enhancement to add an upload indicator
+ *	TODO: future enhancement to add an upload indicator.
  *
- * @param  {Array}    filesList       List of files.
- * @param  {Function} onImagesChange  Function to be called each time a file or a temporary representation of the file is available.
+ * @param   {Object}   $0                   Parameters object passed to the function.
+ * @param   {Array}    $0.filesList         List of files.
+ * @param   {Function} $0.onImagesChange    Function called each time a file or a temporary representation of the file is available.
+ * @param   {Function} $0.onError           Function called when an error happens.
+ * @param   {Integer}  $0.maxUploadFileSize Maximum upload size in bytes allowed for the site.
  */
 export function mediaUpload( {
 	filesList,
 	onImagesChange,
 	onError = noop,
+	maxUploadFileSize = get( window, '_wpMediaSettings.maxUploadSize', 0 ),
 } ) {
 	// Cast filesList to array
 	const files = [ ...filesList ];
@@ -33,6 +37,17 @@ export function mediaUpload( {
 	files.forEach( ( mediaFile, idx ) => {
 		// Only allow image uploads, may need updating if used for video
 		if ( ! /^image\//.test( mediaFile.type ) ) {
+			return;
+		}
+
+		// verify if file is greater than the maximum file upload size allowed for the site.
+		if ( maxUploadFileSize && mediaFile.size > maxUploadFileSize ) {
+			onError(
+				sprintf(
+					__( '%s exceeds the maximum upload size for this site.' ),
+					mediaFile.name
+				)
+			);
 			return;
 		}
 
