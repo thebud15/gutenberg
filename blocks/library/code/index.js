@@ -32,14 +32,6 @@ registerBlockType( 'core/code', {
 		},
 	},
 
-	example: {
-		content: `
-<?php
-	echo "Beep Beeb Boop";
-?>
-`,
-	},
-
 	supports: {
 		html: false,
 	},
