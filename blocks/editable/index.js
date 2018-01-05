@@ -536,8 +536,13 @@ export default class Editable extends Component {
 		}
 
 		// If we click shift+Enter on inline Editables, we avoid creating two contenteditables
-		// We also split the content and call the onSplit prop if provided.
+		// We also call onEnter prop (if provided) or split the content and call the onSplit (if provided).
 		if ( event.keyCode === ENTER ) {
+			if ( this.props.onEnter ) {
+				this.props.onEnter( event );
+				event.preventDefault();
+				return;
+			}
 			if ( this.props.multiline ) {
 				if ( ! this.props.onSplit ) {
 					return;
