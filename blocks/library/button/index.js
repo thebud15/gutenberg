@@ -10,7 +10,7 @@ import { Dashicon, IconButton, PanelColor, withFallbackStyles } from '@wordpress
  */
 import './editor.scss';
 import './style.scss';
-import { registerBlockType } from '../../api';
+import { registerBlockType, createBlock } from '../../api';
 import Editable from '../../editable';
 import UrlInput from '../../url-input';
 import BlockControls from '../../block-controls';
@@ -64,6 +64,7 @@ class ButtonBlock extends Component {
 			focus,
 			setFocus,
 			className,
+			insertBlocksAfter,
 		} = this.props;
 
 		const {
@@ -88,6 +89,15 @@ class ButtonBlock extends Component {
 					placeholder={ __( 'Add text…' ) }
 					value={ text }
 					focus={ focus }
+					onEnter={
+						() => {
+							if ( insertBlocksAfter ) {
+								insertBlocksAfter( [
+									createBlock( 'core/paragraph' ),
+								] );
+							}
+						}
+					}
 					onFocus={ setFocus }
 					onChange={ ( value ) => setAttributes( { text: value } ) }
 					formattingControls={ [ 'bold', 'italic', 'strikethrough' ] }
