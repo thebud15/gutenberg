@@ -5,3 +5,4 @@ import './anchor';
 import './custom-class-name';
 import './generated-class-name';
 import './matchers';
+import './notices/index';
