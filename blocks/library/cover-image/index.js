@@ -93,6 +93,9 @@ registerBlockType( 'core/cover-image', {
 		const { url, title, align, id, hasParallax, dimRatio } = attributes;
 		const updateAlignment = ( nextAlign ) => setAttributes( { align: nextAlign } );
 		const onSelectImage = ( media ) => setAttributes( { url: media.url, id: media.id } );
+		const onSelectImage = ( media ) => ! media ?
+			setAttributes( { url: undefined, id: undefined } ) :
+			setAttributes( { url: media.url, id: media.id } );
 		const toggleParallax = () => setAttributes( { hasParallax: ! hasParallax } );
 		const setDimRatio = ( ratio ) => setAttributes( { dimRatio: ratio } );
 
