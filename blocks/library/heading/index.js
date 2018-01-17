@@ -89,8 +89,8 @@ registerBlockType( 'core/heading', {
 				type: 'shortcut',
 				blocks: [ 'core/paragraph' ],
 				shortcut: level,
-				transform( blockAttributes ) {
-					return blockAttributes.map( ( { content } ) => {
+				transform( blocks ) {
+					return blocks.map( ( { attributes: { content } } ) => {
 						return createBlock( 'core/heading', {
 							nodeName: `H${ level }`,
 							content,
@@ -112,13 +112,13 @@ registerBlockType( 'core/heading', {
 			...'23456'.split( '' ).map( ( level ) => ( {
 				type: 'shortcut',
 				shortcut: level,
-				transform( attributes ) {
-					const firstNodeName = first( attributes ).nodeName;
-					const isSame = attributes.every( ( { nodeName } ) => nodeName === firstNodeName );
+				transform( blocks ) {
+					const firstNodeName = first( blocks ).attributes.nodeName;
+					const isSame = blocks.every( ( { attributes: { nodeName } } ) => nodeName === firstNodeName );
 
 					// If already at level, set back to paragraphs.
 					if ( isSame && firstNodeName === `H${ level }` ) {
-						return attributes.map( ( { content } ) => {
+						return blocks.map( ( { attributes: { content } } ) => {
 							return createBlock( 'core/paragraph', {
 								content,
 							} );

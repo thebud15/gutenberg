@@ -102,9 +102,9 @@ registerBlockType( 'core/quote', {
 				type: 'shortcut',
 				blocks: [ 'core/paragraph' ],
 				shortcut: 'q',
-				transform( multiAttributes ) {
+				transform( blocks ) {
 					return createBlock( 'core/quote', {
-						value: multiAttributes.map( ( { content, i } ) => ( {
+						value: blocks.map( ( { attributes: { content }, i } ) => ( {
 							children: <p key={ i }>{ content }</p>,
 						} ) ),
 					} );
@@ -164,8 +164,8 @@ registerBlockType( 'core/quote', {
 				type: 'shortcut',
 				blocks: [ 'core/paragraph' ],
 				shortcut: 'q',
-				transform( multiAttributes ) {
-					return multiAttributes.reduce( ( acc, { value, citation } ) => {
+				transform( blocks ) {
+					return blocks.reduce( ( acc, { attributes: { value, citation } } ) => {
 						value.forEach( ( paragraph ) => {
 							acc.push( createBlock( 'core/paragraph', {
 								content: [ get( paragraph, 'children.props.children', '' ) ],
@@ -174,7 +174,7 @@ registerBlockType( 'core/quote', {
 
 						if ( citation ) {
 							acc.push( createBlock( 'core/paragraph', {
-								content: citation
+								content: citation,
 							} ) );
 						}
 
