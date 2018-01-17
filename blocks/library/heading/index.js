@@ -19,6 +19,7 @@ import Editable from '../../editable';
 import BlockControls from '../../block-controls';
 import InspectorControls from '../../inspector-controls';
 import AlignmentToolbar from '../../alignment-toolbar';
+import alignmentShortcuts from '../../alignment-shortcuts';
 
 registerBlockType( 'core/heading', {
 	title: __( 'Heading' ),
@@ -127,21 +128,7 @@ registerBlockType( 'core/heading', {
 					return { nodeName: `H${ level }` };
 				},
 			} ) ),
-			...[ 'left', 'center', 'right' ].map( ( value ) => ( {
-				type: 'shortcut',
-				shortcut: value.charAt( 0 ),
-				transform( attributes ) {
-					const firstAlign = first( attributes ).align;
-					const isSame = attributes.every( ( { align } ) => align === firstAlign );
-
-					// If already aligned, set back to default.
-					if ( isSame && firstAlign === value ) {
-						return { align: undefined };
-					}
-
-					return { align: value };
-				},
-			} ) ),
+			...alignmentShortcuts,
 		],
 	},
 

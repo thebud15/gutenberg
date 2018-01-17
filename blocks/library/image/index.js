@@ -11,6 +11,7 @@ import './style.scss';
 import './editor.scss';
 import { registerBlockType, createBlock, getBlockAttributes, getBlockType } from '../../api';
 import ImageBlock from './block';
+import alignmentShortcuts from '../../alignment-shortcuts';
 
 registerBlockType( 'core/image', {
 	title: __( 'Image' ),
@@ -142,6 +143,7 @@ registerBlockType( 'core/image', {
 				},
 			},
 		],
+		to: alignmentShortcuts,
 	},
 
 	getEditWrapperProps( attributes ) {
