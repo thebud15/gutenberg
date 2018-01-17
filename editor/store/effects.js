@@ -16,6 +16,8 @@ import {
 	createReusableBlock,
 	isReusableBlock,
 	getDefaultBlockName,
+	getDefaultBlockForPostFormat,
+	setDefaultBlockName,
 } from '@wordpress/blocks';
 import { __ } from '@wordpress/i18n';
 import { speak } from '@wordpress/a11y';
@@ -25,6 +27,7 @@ import { speak } from '@wordpress/a11y';
  */
 import { getPostEditUrl, getWPAdminURL } from '../utils/url';
 import {
+	appendDefaultBlock,
 	resetPost,
 	setupNewPost,
 	resetBlocks,
@@ -51,6 +54,7 @@ import {
 	isEditedPostNew,
 	isEditedPostSaveable,
 	getBlock,
+	getBlockCount,
 	getBlocks,
 	getReusableBlock,
 	POST_UPDATE_TRANSACTION_ID,
@@ -303,6 +307,9 @@ export default {
 				return block;
 			} );
 			effects.push( resetBlocks( blocks ) );
+		} else if ( getDefaultBlockForPostFormat( post.format ) ) {
+			setDefaultBlockName( getDefaultBlockForPostFormat( post.format ) );
+			effects.push( appendDefaultBlock() );
 		}
 
 		// Resetting post should occur after blocks have been reset, since it's
@@ -456,6 +463,16 @@ export default {
 		// Allow toggling metaboxes panels
 		if ( some( action.metaBoxes ) ) {
 			window.postboxes.add_postbox_toggles( 'post' );
+		}
+	},
+	EDIT_POST( action, { getState } ) {
+		const format = get( action, 'edits.format' );
+		if ( format ) {
+			const blockName = getDefaultBlockForPostFormat( format );
+			setDefaultBlockName( blockName || 'core/paragraph' );
+			if ( blockName && getBlockCount( getState() ) === 0 ) {
+				return appendDefaultBlock();
+			}
 		}
 	},
 };
