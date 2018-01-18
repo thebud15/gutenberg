@@ -162,7 +162,6 @@ registerBlockType( 'core/quote', {
 			},
 			{
 				type: 'shortcut',
-				blocks: [ 'core/paragraph' ],
 				shortcut: 'q',
 				transform( blocks ) {
 					return flatMap( blocks, ( { attributes: { value, citation } } ) => [
