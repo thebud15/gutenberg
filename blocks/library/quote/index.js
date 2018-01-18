@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { isString, get } from 'lodash';
+import { isString, get, flatMap } from 'lodash';
 import classnames from 'classnames';
 
 /**
@@ -165,21 +165,14 @@ registerBlockType( 'core/quote', {
 				blocks: [ 'core/paragraph' ],
 				shortcut: 'q',
 				transform( blocks ) {
-					return blocks.reduce( ( acc, { attributes: { value, citation } } ) => {
-						value.forEach( ( paragraph ) => {
-							acc.push( createBlock( 'core/paragraph', {
-								content: [ get( paragraph, 'children.props.children', '' ) ],
-							} ) );
-						} );
-
-						if ( citation ) {
-							acc.push( createBlock( 'core/paragraph', {
-								content: citation,
-							} ) );
-						}
-
-						return acc;
-					}, [] );
+					return flatMap( blocks, ( { attributes: { value, citation } } ) => [
+						...value.map( ( paragraph ) => createBlock( 'core/paragraph', {
+							content: [ get( paragraph, 'children.props.children', '' ) ],
+						} ) ),
+						...( citation ? [ createBlock( 'core/paragraph', {
+							content: citation,
+						} ) ] : [] ),
+					] );
 				},
 			},
 		],
