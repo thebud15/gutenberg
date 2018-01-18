@@ -10,6 +10,7 @@ import './editor.scss';
 import './style.scss';
 import { registerBlockType } from '../../api';
 import LatestPostsBlock from './block';
+import alignmentShortcuts from '../../alignment-shortcuts';
 
 registerBlockType( 'core/latest-posts', {
 	title: __( 'Latest Posts' ),
@@ -24,6 +25,10 @@ registerBlockType( 'core/latest-posts', {
 
 	supports: {
 		html: false,
+	},
+
+	transforms: {
+		to: alignmentShortcuts,
 	},
 
 	getEditWrapperProps( attributes ) {

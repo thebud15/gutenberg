@@ -19,6 +19,7 @@ import MediaUpload from '../../media-upload';
 import Editable from '../../editable';
 import BlockControls from '../../block-controls';
 import BlockAlignmentToolbar from '../../block-alignment-toolbar';
+import alignmentShortcuts from '../../alignment-shortcuts';
 
 registerBlockType( 'core/video', {
 	title: __( 'Video' ),
@@ -47,6 +48,10 @@ registerBlockType( 'core/video', {
 			source: 'children',
 			selector: 'figcaption',
 		},
+	},
+
+	transforms: {
+		to: alignmentShortcuts,
 	},
 
 	getEditWrapperProps( attributes ) {

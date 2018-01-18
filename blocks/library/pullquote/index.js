@@ -17,6 +17,7 @@ import { registerBlockType } from '../../api';
 import Editable from '../../editable';
 import BlockControls from '../../block-controls';
 import BlockAlignmentToolbar from '../../block-alignment-toolbar';
+import alignmentShortcuts from '../../alignment-shortcuts';
 
 const toEditableValue = value => map( value, ( subValue => subValue.children ) );
 const fromEditableValue = value => map( value, ( subValue ) => ( {
@@ -55,6 +56,10 @@ registerBlockType( 'core/pullquote', {
 	category: 'formatting',
 
 	attributes: blockAttributes,
+
+	transforms: {
+		to: alignmentShortcuts,
+	},
 
 	getEditWrapperProps( attributes ) {
 		const { align } = attributes;

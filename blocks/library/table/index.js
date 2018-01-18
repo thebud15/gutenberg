@@ -12,6 +12,7 @@ import { registerBlockType } from '../../api';
 import TableBlock from './table-block';
 import BlockControls from '../../block-controls';
 import BlockAlignmentToolbar from '../../block-alignment-toolbar';
+import alignmentShortcuts from '../../alignment-shortcuts';
 
 registerBlockType( 'core/table', {
 	title: __( 'Table' ),
@@ -43,6 +44,7 @@ registerBlockType( 'core/table', {
 				isMatch: ( node ) => node.nodeName === 'TABLE',
 			},
 		],
+		to: alignmentShortcuts,
 	},
 
 	getEditWrapperProps( attributes ) {

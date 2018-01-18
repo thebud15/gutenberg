@@ -19,6 +19,7 @@ import MediaUpload from '../../media-upload';
 import Editable from '../../editable';
 import BlockControls from '../../block-controls';
 import BlockAlignmentToolbar from '../../block-alignment-toolbar';
+import alignmentShortcuts from '../../alignment-shortcuts';
 
 registerBlockType( 'core/audio', {
 	title: __( 'Audio' ),
@@ -47,6 +48,10 @@ registerBlockType( 'core/audio', {
 		id: {
 			type: 'number',
 		},
+	},
+
+	transforms: {
+		to: alignmentShortcuts,
 	},
 
 	getEditWrapperProps( attributes ) {

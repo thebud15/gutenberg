@@ -10,6 +10,7 @@ import './editor.scss';
 import './style.scss';
 import { registerBlockType } from '../../api';
 import CategoriesBlock from './block';
+import alignmentShortcuts from '../../alignment-shortcuts';
 
 registerBlockType( 'core/categories', {
 	title: __( 'Categories' ),
@@ -36,6 +37,10 @@ registerBlockType( 'core/categories', {
 		align: {
 			type: 'string',
 		},
+	},
+
+	transforms: {
+		to: alignmentShortcuts,
 	},
 
 	supports: {

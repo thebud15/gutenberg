@@ -19,6 +19,7 @@ import { registerBlockType, createBlock } from '../../api';
 import AlignmentToolbar from '../../alignment-toolbar';
 import BlockControls from '../../block-controls';
 import Editable from '../../editable';
+import alignmentShortcuts from '../../alignment-shortcuts';
 
 const toEditableValue = value => value.map( ( subValue => subValue.children ) );
 const fromEditableValue = value => value.map( ( subValue ) => ( {
@@ -174,6 +175,7 @@ registerBlockType( 'core/quote', {
 					] );
 				},
 			},
+			...alignmentShortcuts,
 		],
 	},
 

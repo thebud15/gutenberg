@@ -24,6 +24,7 @@ import BlockAlignmentToolbar from '../../block-alignment-toolbar';
 import InspectorControls from '../../inspector-controls';
 import ToggleControl from '../../inspector-controls/toggle-control';
 import RangeControl from '../../inspector-controls/range-control';
+import alignmentShortcuts from '../../alignment-shortcuts';
 
 const validAlignments = [ 'left', 'center', 'right', 'wide', 'full' ];
 
@@ -79,6 +80,7 @@ registerBlockType( 'core/cover-image', {
 					createBlock( 'core/heading', { content: title } )
 				),
 			},
+			...alignmentShortcuts,
 		],
 	},
 
