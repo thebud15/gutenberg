@@ -195,18 +195,23 @@ class WritingFlow extends Component {
 			this.props.onBottomReached();
 		}
 
-		// We have to check early, by the time both keys are pressed,
-		// selection already happened.
+		const activeElement = document.activeElement;
+
+		// Set right before the meta+a combination can be pressed.
 		if ( isMeta( event ) ) {
-			this.activeElementFullySelected = isFullySelected( document.activeElement );
+			this.isFullySelected = isFullySelected( activeElement );
 		}
 
 		if ( isMeta( event, 'a' ) ) {
-			if ( this.activeElementFullySelected ) {
+			// In the case of contentEditable, we want to know the earlier value
+			// because the selection will have already been set by TinyMCE.
+			if ( activeElement.isContentEditable ? this.isFullySelected : isFullySelected( activeElement ) ) {
 				onMultiSelect( first( blocks ), last( blocks ) );
+				event.preventDefault();
 			}
 
-			this.activeElementFullySelected = isFullySelected( document.activeElement );
+			// Set in case the meta key doesn't get released.
+			this.isFullySelected = isFullySelected( activeElement );
 		}
 	}
 

@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { connect } from 'react-redux';
-import { first, last } from 'lodash';
 
 /**
  * WordPress dependencies
@@ -14,20 +13,13 @@ import { KeyboardShortcuts, withContext } from '@wordpress/components';
  * Internal dependencies
  */
 import { getBlockUids, getMultiSelectedBlockUids } from '../../store/selectors';
-import { clearSelectedBlock, multiSelect, redo, undo, removeBlocks } from '../../store/actions';
+import { clearSelectedBlock, redo, undo, removeBlocks } from '../../store/actions';
 
 class EditorGlobalKeyboardShortcuts extends Component {
 	constructor() {
 		super( ...arguments );
-		this.selectAll = this.selectAll.bind( this );
 		this.undoOrRedo = this.undoOrRedo.bind( this );
 		this.deleteSelectedBlocks = this.deleteSelectedBlocks.bind( this );
-	}
-
-	selectAll( event ) {
-		const { uids, onMultiSelect } = this.props;
-		event.preventDefault();
-		onMultiSelect( first( uids ), last( uids ) );
 	}
 
 	undoOrRedo( event ) {
@@ -54,7 +46,6 @@ class EditorGlobalKeyboardShortcuts extends Component {
 	render() {
 		return (
 			<KeyboardShortcuts shortcuts={ {
-				'mod+a': this.selectAll,
 				'mod+z': this.undoOrRedo,
 				'mod+shift+z': this.undoOrRedo,
 				backspace: this.deleteSelectedBlocks,
@@ -75,7 +66,6 @@ export default compose(
 		},
 		{
 			clearSelectedBlock,
-			onMultiSelect: multiSelect,
 			onRedo: redo,
 			onUndo: undo,
 			onRemove: removeBlocks,
