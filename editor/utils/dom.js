@@ -341,3 +341,29 @@ export function documentHasSelection() {
 
 	return range && ! range.collapsed;
 }
+
+export function isFullySelected( element ) {
+	if ( includes( [ 'INPUT', 'TEXTAREA' ], element.nodeName ) ) {
+		return element.selectionStart === 0 && element.value.length === element.selectionEnd;
+	}
+
+	if ( ! element.isContentEditable ) {
+		return true;
+	}
+
+	const selection = window.getSelection();
+	const range = selection.rangeCount ? selection.getRangeAt( 0 ) : null;
+
+	if ( ! range ) {
+		return true;
+	}
+
+	const { startContainer, endContainer, startOffset, endOffset } = range;
+
+	return (
+		startContainer === element &&
+		endContainer === element &&
+		startOffset === 0 &&
+		endOffset === element.childNodes.length
+	);
+}

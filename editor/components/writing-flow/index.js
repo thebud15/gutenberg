@@ -3,7 +3,7 @@
  */
 import { connect } from 'react-redux';
 import 'element-closest';
-import { find, last, reverse } from 'lodash';
+import { find, first, last, reverse } from 'lodash';
 /**
  * WordPress dependencies
  */
@@ -20,6 +20,7 @@ import {
 	isVerticalEdge,
 	placeCaretAtHorizontalEdge,
 	placeCaretAtVerticalEdge,
+	isFullySelected,
 } from '../../utils/dom';
 import {
 	getBlockUids,
@@ -33,7 +34,7 @@ import { multiSelect, appendDefaultBlock } from '../../store/actions';
 /**
  * Module Constants
  */
-const { UP, DOWN, LEFT, RIGHT } = keycodes;
+const { UP, DOWN, LEFT, RIGHT, isMeta } = keycodes;
 
 function isElementNonEmpty( el ) {
 	return !! el.innerText.trim();
@@ -148,7 +149,7 @@ class WritingFlow extends Component {
 	}
 
 	onKeyDown( event ) {
-		const { selectedBlock, selectionStart, selectionEnd, blocks, hasMultiSelection } = this.props;
+		const { selectedBlock, selectionStart, selectionEnd, blocks, hasMultiSelection, onMultiSelect } = this.props;
 
 		const { keyCode, target } = event;
 		const isUp = keyCode === UP;
@@ -192,6 +193,20 @@ class WritingFlow extends Component {
 				isVerticalEdge( target, false, false )
 		) {
 			this.props.onBottomReached();
+		}
+
+		// We have to check early, by the time both keys are pressed,
+		// selection already happened.
+		if ( isMeta( event ) ) {
+			this.activeElementFullySelected = isFullySelected( document.activeElement );
+		}
+
+		if ( isMeta( event, 'a' ) ) {
+			if ( this.activeElementFullySelected ) {
+				onMultiSelect( first( blocks ), last( blocks ) );
+			}
+
+			this.activeElementFullySelected = isFullySelected( document.activeElement );
 		}
 	}
 
