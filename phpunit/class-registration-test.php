@@ -6,9 +6,11 @@
  */
 
 /**
- * Test register_block_type() and unregister_block_type()
+ * Test register_block_type(), unregister_block_type(), get_dynamic_block_names()
  */
 class Registration_Test extends WP_UnitTestCase {
+
+	function render_stub() {}
 
 	function tearDown() {
 		parent::tearDown();
@@ -39,5 +41,14 @@ class Registration_Test extends WP_UnitTestCase {
 		unregister_block_type( $name );
 
 		$this->assertFalse( WP_Block_Type_Registry::get_instance()->is_registered( $name ) );
+	}
+
+	function test_get_dynamic_block_names() {
+		register_block_type( 'core/paragraph', array() );
+		register_block_type( 'core/dynamic', array( 'render_callback' => array( $this, 'render_stub' ) ) );
+
+		$dynamic_block_names = get_dynamic_block_names();
+
+		$this->assertSame( array( 'core/dynamic' ), $dynamic_block_names );
 	}
 }
