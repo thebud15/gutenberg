@@ -35,10 +35,16 @@ class Inserter extends Component {
 		const {
 			insertIndex,
 			onToggle,
+			rootUID,
+			layout,
 		} = this.props;
 
 		if ( isOpen ) {
-			this.props.showInsertionPoint( insertIndex );
+			this.props.showInsertionPoint(
+				insertIndex,
+				rootUID,
+				layout,
+			);
 		} else {
 			this.props.hideInsertionPoint();
 		}
@@ -84,6 +90,7 @@ class Inserter extends Component {
 				renderContent={ ( { onClose } ) => {
 					const onSelect = ( item ) => {
 						onInsertBlock( item, insertionPoint );
+
 						onClose();
 					};
 
@@ -96,16 +103,19 @@ class Inserter extends Component {
 
 export default compose( [
 	connect(
-		( state ) => {
+		( state, ownProps ) => {
 			return {
-				insertionPoint: getBlockInsertionPoint( state ),
+				insertionPoint: getBlockInsertionPoint( state, ownProps.rootUID ),
 			};
 		},
-		( dispatch ) => ( {
-			onInsertBlock( item, position ) {
+		( dispatch, ownProps ) => ( {
+			onInsertBlock( item, index ) {
+				const { rootUID, layout } = ownProps;
+				const { name, initialAttributes } = item;
 				dispatch( insertBlock(
-					createBlock( item.name, item.initialAttributes ),
-					position
+					createBlock( name, { ...initialAttributes, layout } ),
+					index,
+					rootUID,
 				) );
 			},
 			...bindActionCreators( {

@@ -26,9 +26,8 @@ import { serialize } from '@wordpress/blocks';
 import './style.scss';
 import BlockListBlock from './block';
 import BlockListSiblingInserter from './sibling-inserter';
-import BlockSelectionClearer from '../block-selection-clearer';
+import DefaultBlockAppender from '../default-block-appender';
 import {
-	getBlockUids,
 	getMultiSelectedBlocksStartUid,
 	getMultiSelectedBlocksEndUid,
 	getMultiSelectedBlocks,
@@ -40,7 +39,7 @@ import {
 import { startMultiSelect, stopMultiSelect, multiSelect, selectBlock } from '../../store/actions';
 import { documentHasSelection } from '../../utils/dom';
 
-class BlockList extends Component {
+class BlockListLayout extends Component {
 	constructor( props ) {
 		super( props );
 
@@ -246,30 +245,59 @@ class BlockList extends Component {
 	}
 
 	render() {
-		const { blocks, showContextualToolbar, renderBlockMenu } = this.props;
+		const {
+			blocks,
+			showContextualToolbar,
+			layout,
+			isGroupedByLayout,
+			rootUID,
+			renderBlockMenu,
+		} = this.props;
+
+		let defaultLayout;
+		if ( isGroupedByLayout ) {
+			defaultLayout = layout;
+		}
 
 		return (
-			<BlockSelectionClearer>
-				{ !! blocks.length && <BlockListSiblingInserter /> }
-				{ map( blocks, ( uid ) => (
+			<div className={ 'layout-' + layout }>
+				{ !! blocks.length && (
+					<BlockListSiblingInserter
+						rootUID={ rootUID }
+						uid={ blocks[ 0 ].uid }
+						layout={ defaultLayout }
+						insertBefore
+					/>
+				) }
+				{ map( blocks, ( block, blockIndex ) => (
 					<BlockListBlock
-						key={ 'block-' + uid }
-						uid={ uid }
+						key={ 'block-' + block.uid }
+						index={ blockIndex }
+						uid={ block.uid }
 						blockRef={ this.setBlockRef }
 						onSelectionStart={ this.onSelectionStart }
 						onShiftSelection={ this.onShiftSelection }
 						showContextualToolbar={ showContextualToolbar }
+						rootUID={ rootUID }
+						layout={ defaultLayout }
+						isFirst={ blockIndex === 0 }
+						isLast={ blockIndex === blocks.length - 1 }
 						renderBlockMenu={ renderBlockMenu }
 					/>
 				) ) }
-			</BlockSelectionClearer>
+				{ ! blocks.length && (
+					<DefaultBlockAppender
+						rootUID={ rootUID }
+						layout={ defaultLayout }
+					/>
+				) }
+			</div>
 		);
 	}
 }
 
 export default connect(
 	( state ) => ( {
-		blocks: getBlockUids( state ),
 		selectionStart: getMultiSelectedBlocksStartUid( state ),
 		selectionEnd: getMultiSelectedBlocksEndUid( state ),
 		multiSelectedBlocks: getMultiSelectedBlocks( state ),
@@ -295,4 +323,4 @@ export default connect(
 			dispatch( { type: 'REMOVE_BLOCKS', uids } );
 		},
 	} )
-)( BlockList );
+)( BlockListLayout );

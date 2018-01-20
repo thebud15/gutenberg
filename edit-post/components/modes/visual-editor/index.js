@@ -10,7 +10,6 @@ import {
 	BlockList,
 	PostTitle,
 	WritingFlow,
-	DefaultBlockAppender,
 	EditorGlobalKeyboardShortcuts,
 	BlockSelectionClearer,
 	InserterWithShortcuts,
@@ -39,7 +38,6 @@ function VisualEditor( props ) {
 						</Fragment>
 					) }
 				/>
-				<DefaultBlockAppender />
 			</WritingFlow>
 			<InserterWithShortcuts />
 		</BlockSelectionClearer>
