@@ -7,7 +7,7 @@ import moment from 'moment';
  * WordPress dependencies
  */
 import { __ } from '@wordpress/i18n';
-import { registerBlockType, unregisterBlockType, getBlockTypes } from '@wordpress/blocks';
+import { registerBlockType, unregisterBlockType } from '@wordpress/blocks';
 
 /**
  * Internal dependencies
@@ -70,9 +70,6 @@ import {
 	didPostSaveRequestFail,
 	getSuggestedPostFormat,
 	getNotices,
-	getInserterItems,
-	getMostFrequentlyUsedBlocks,
-	getRecentInserterItems,
 	getMetaBoxes,
 	hasMetaBoxes,
 	isSavingMetaBoxes,
@@ -2115,154 +2112,6 @@ describe( 'selectors', () => {
 			};
 
 			expect( getNotices( state ) ).toEqual( state.notices );
-		} );
-	} );
-
-<<<<<<< HEAD
-	describe( 'getMostFrequentlyUsedBlocks', () => {
-		it( 'should have paragraph and image to bring frequently used blocks up to three blocks', () => {
-			const noUsage = { preferences: { blockUsage: {} } };
-			const someUsage = { preferences: { blockUsage: { 'core/paragraph': 1 } } };
-
-			expect( getMostFrequentlyUsedBlocks( noUsage ).map( ( block ) => block.name ) )
-				.toEqual( [ 'core/paragraph', 'core/image' ] );
-
-			expect( getMostFrequentlyUsedBlocks( someUsage ).map( ( block ) => block.name ) )
-				.toEqual( [ 'core/paragraph', 'core/image' ] );
-		} );
-		it( 'should return the top 3 most recently used blocks', () => {
-			const state = {
-				preferences: {
-					blockUsage: {
-						'core/deleted-block': 20,
-						'core/paragraph': 4,
-						'core/image': 11,
-						'core/quote': 2,
-						'core/gallery': 1,
-					},
-				},
-			};
-
-			expect( getMostFrequentlyUsedBlocks( state ).map( ( block ) => block.name ) )
-				.toEqual( [ 'core/image', 'core/paragraph', 'core/quote' ] );
-		} );
-	} );
-
-	describe( 'getInserterItems', () => {
-		it( 'should list all non-private regular block types', () => {
-			const state = {
-				editor: {
-					present: {
-						blocksByUid: {},
-						blockOrder: [],
-					},
-				},
-				reusableBlocks: {
-					data: {},
-				},
-			};
-
-			const blockTypes = getBlockTypes().filter( blockType => ! blockType.isPrivate );
-			expect( getInserterItems( state ) ).toHaveLength( blockTypes.length );
-		} );
-
-		it( 'should properly list a regular block type', () => {
-			const state = {
-				editor: {
-					present: {
-						blocksByUid: {},
-						blockOrder: [],
-					},
-				},
-				reusableBlocks: {
-					data: {},
-				},
-			};
-
-			expect( getInserterItems( state, [ 'core/test-block' ] ) ).toEqual( [
-				{
-					id: 'core/test-block',
-					name: 'core/test-block',
-					initialAttributes: {},
-					title: 'test block',
-					icon: 'test',
-					category: 'common',
-					keywords: [ 'testing' ],
-					isDisabled: false,
-				},
-			] );
-		} );
-
-		it( 'should set isDisabled when a regular block type with useOnce has been used', () => {
-			const state = {
-				editor: {
-					present: {
-						blocksByUid: {
-							1: { uid: 1, name: 'core/test-block', attributes: {} },
-						},
-						blockOrder: [ 1 ],
-					},
-				},
-				reusableBlocks: {
-					data: {},
-				},
-			};
-
-			const items = getInserterItems( state, [ 'core/test-block' ] );
-			expect( items[ 0 ].isDisabled ).toBe( true );
-		} );
-
-		it( 'should properly list reusable blocks', () => {
-			const state = {
-				editor: {
-					present: {
-						blocksByUid: {},
-						blockOrder: [],
-					},
-				},
-				reusableBlocks: {
-					data: {
-						123: {
-							id: 123,
-							title: 'My reusable block',
-							type: 'core/test-block',
-						},
-					},
-				},
-			};
-
-			expect( getInserterItems( state, [ 'core/block' ] ) ).toEqual( [
-				{
-					id: 'core/block/123',
-					name: 'core/block',
-					initialAttributes: { ref: 123 },
-					title: 'My reusable block',
-					icon: 'test',
-					category: 'reusable-blocks',
-					keywords: [],
-					isDisabled: false,
-				},
-			] );
-		} );
-
-		it( 'should return nothing when all block types are disabled', () => {
-			expect( getInserterItems( {}, false ) ).toEqual( [] );
-		} );
-	} );
-
-	describe( 'getRecentInserterItems', () => {
-=======
-	describe( 'getRecentlyUsedBlocks', () => {
->>>>>>> Editor: Bring back the trailing placeholder
-		it( 'should return the most recently used blocks', () => {
-			const state = {
-				preferences: {
-					recentlyUsedBlocks: [ 'core/deleted-block', 'core/paragraph', 'core/image' ],
-				},
-			};
-
-			expect( getRecentInserterItems( state ).map( ( item ) => item.name ) )
-				.toEqual( [ 'core/paragraph', 'core/image' ] );
 		} );
 	} );
 
