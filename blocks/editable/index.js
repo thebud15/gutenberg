@@ -22,7 +22,7 @@ import 'element-closest';
  */
 import { createElement, Component, renderToString } from '@wordpress/element';
 import { keycodes, createBlobURL } from '@wordpress/utils';
-import { Slot, Fill } from '@wordpress/components';
+import { Slot, Fill, withContext } from '@wordpress/components';
 
 /**
  * Internal dependencies
@@ -72,7 +72,7 @@ function getFormatProperties( formatName, parents ) {
 
 const DEFAULT_FORMATS = [ 'bold', 'italic', 'strikethrough', 'link' ];
 
-export default class Editable extends Component {
+export class Editable extends Component {
 	constructor( props ) {
 		super( ...arguments );
 
@@ -371,6 +371,7 @@ export default class Editable extends Component {
 			plainText: this.pastedPlainText,
 			mode,
 			tagName: this.props.tagName,
+			allowIframes: this.props.unfilteredHTML,
 		} );
 
 		if ( typeof content === 'string' ) {
@@ -907,3 +908,9 @@ Editable.defaultProps = {
 	formattingControls: DEFAULT_FORMATS,
 	formatters: [],
 };
+
+export default withContext( 'editor' )(
+	( settings ) => ( {
+		unfilteredHTML: settings && settings.unfilteredHTML,
+	} )
+)( Editable );

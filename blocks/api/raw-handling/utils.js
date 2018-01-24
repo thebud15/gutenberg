@@ -60,6 +60,7 @@ const whitelist = {
 	tfoot: {},
 	tbody: {},
 	tr: {},
+	iframe: { attributes: [ 'src', 'allowfullscreen', 'height', 'width' ] },
 };
 
 export function isWhitelisted( element ) {
