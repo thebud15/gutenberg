@@ -1,0 +1,8 @@
+/* a hack, obviously */
+.wp-block-page {
+	background-color: #fafafe;
+
+	> div > * {
+		background-color: auto;
+	}
+}

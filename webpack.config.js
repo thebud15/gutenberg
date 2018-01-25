@@ -47,6 +47,7 @@ const extractConfig = {
 const entryPointNames = [
 	'blocks',
 	'components',
+	'edit-template',
 	'date',
 	'editor',
 	'element',

@@ -63,6 +63,15 @@ function gutenberg_menu() {
 		'gutenberg'
 	);
 
+	add_submenu_page(
+		'themes.php',
+		__( 'Page Editor', 'gutenberg' ),
+		__( 'Page Editor', 'gutenberg' ),
+		'edit_posts',
+		'edit-template',
+		'the_customberg_project'
+	);
+
 	if ( current_user_can( 'edit_posts' ) ) {
 		$submenu['gutenberg'][] = array(
 			__( 'Feedback', 'gutenberg' ),
@@ -78,6 +87,47 @@ function gutenberg_menu() {
 	}
 }
 add_action( 'admin_menu', 'gutenberg_menu' );
+
+function customberg_register_scripts() {
+	wp_register_script(
+		'wp-edit-template',
+		gutenberg_url( 'edit-template/build/index.js' ),
+		array( 'wp-editor' ),
+		filemtime( gutenberg_dir_path() . 'edit-template/build/index.js' ),
+		true
+	);
+}
+add_action( 'admin_enqueue_scripts', 'customberg_register_scripts' );
+
+function the_customberg_project() {
+	global $post;
+
+	// Initialize the post data.
+	wp_add_inline_script(
+		'wp-edit-template',
+		'window._wpGutenbergPost = ' . wp_json_encode( gutenberg_get_post_to_edit( $post ) ) . ';'
+	);
+
+	$script  = '( function() {';
+	//$script .= sprintf( 'var editorSettings = %s;', wp_json_encode( $editor_settings ) );
+	$script .= <<<JS
+		window._wpLoadGutenbergEditor = wp.api.init().then( function() {
+			wp.blocks.registerCoreBlocks();
+			return wp[ 'edit-template' ].initializeEditor( 'editor', window._wpGutenbergPost );
+		} );
+JS;
+	$script .= '} )();';
+	wp_add_inline_script( 'wp-edit-template', $script );
+
+	wp_enqueue_script( 'wp-edit-template' );
+	gutenberg_extend_wp_api_backbone_client();
+	wp_enqueue_style( 'wp-edit-post' );
+	?>
+	<div class="gutenberg edit-template">
+		<div id="editor" class="gutenberg__editor"></div>
+	</div>
+	<?php
+}
 
 /**
  * Display a version notice and deactivate the Gutenberg plugin.
@@ -157,12 +207,17 @@ function gutenberg_init( $return, $post ) {
 		return false;
 	}
 
-	add_action( 'admin_enqueue_scripts', 'gutenberg_editor_scripts_and_styles' );
 	add_filter( 'screen_options_show_screen', '__return_false' );
 	add_filter( 'admin_body_class', 'gutenberg_add_admin_body_class' );
 
-	require_once ABSPATH . 'wp-admin/admin-header.php';
-	the_gutenberg_project();
+	if ( 'wp_template' === get_post_type( $post ) ) {
+		require_once ABSPATH . 'wp-admin/admin-header.php';
+		the_customberg_project();
+	} else {
+		add_action( 'admin_enqueue_scripts', 'gutenberg_editor_scripts_and_styles' );
+		require_once ABSPATH . 'wp-admin/admin-header.php';
+		the_gutenberg_project();
+	}
 
 	return true;
 }

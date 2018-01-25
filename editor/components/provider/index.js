@@ -32,6 +32,7 @@ import store from '../../store';
  */
 const DEFAULT_SETTINGS = {
 	alignWide: false,
+	blockTypes: true,
 
 	// This is current max width of the block inner area
 	// It's used to constraint image resizing and this value could be overriden later by themes
