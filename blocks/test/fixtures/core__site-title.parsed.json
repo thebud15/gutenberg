@@ -1,0 +1,18 @@
+[
+    {
+        "blockName": "core/site-title",
+        "attrs": {
+            "align": "center",
+            "className": "my-very-nice-class",
+            "fontSize": 85,
+            "backgroundColor": "#ff6900",
+            "textColor": "#7bdcb5"
+        },
+        "innerBlocks": [],
+        "innerHTML": ""
+    },
+    {
+        "attrs": {},
+        "innerHTML": "\n"
+    }
+]
