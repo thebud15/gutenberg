@@ -128,7 +128,17 @@ class WP_Block_Type {
 
 		$attributes = $this->prepare_attributes_for_render( $attributes );
 
-		return call_user_func( $this->render_callback, $attributes, $content, $inner_blocks );
+		ob_start();
+
+		$rendered = call_user_func( $this->render_callback, $attributes, $content, $inner_blocks );
+
+		if ( ! $rendered ) {
+			return ob_get_clean();
+		}
+
+		ob_end_flush();
+
+		return $rendered;
 	}
 
 	/**

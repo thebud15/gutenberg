@@ -1,0 +1,11 @@
+.wp-block-post-navigation__previous:before {
+	content: '← ';
+}
+
+.wp-block-post-navigation__next:after {
+	content: ' →';
+}
+
+.wp-block-post-navigation__next {
+	float: right;
+}

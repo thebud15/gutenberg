@@ -17,6 +17,13 @@ import * as gallery from './gallery';
 import * as heading from './heading';
 import * as html from './html';
 import * as image from './image';
+import * as layoutPostCommentForm from './layout-post-comment-form';
+import * as layoutPostCommentList from './layout-post-comment-list';
+import * as layoutPostContent from './layout-post-content';
+import * as layoutPostDate from './layout-post-date';
+import * as layoutPostNavigation from './layout-post-navigation';
+import * as layoutPostSharing from './layout-post-sharing';
+import * as layoutPostTitle from './layout-post-title';
 import * as latestPosts from './latest-posts';
 import * as list from './list';
 import * as more from './more';
@@ -50,6 +57,13 @@ export const registerCoreBlocks = () => {
 		heading,
 		html,
 		image,
+		layoutPostCommentForm,
+		layoutPostCommentList,
+		layoutPostContent,
+		layoutPostDate,
+		layoutPostNavigation,
+		layoutPostSharing,
+		layoutPostTitle,
 		list,
 		latestPosts,
 		more,
