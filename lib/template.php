@@ -6,6 +6,27 @@
  */
 
 /**
+ * Given template output content, returns the markup of the theme's header and
+ * footer output, where template output replaces the theme's own body content.
+ *
+ * @param string $content Template output content.
+ *
+ * @return string Theme content with template output injected.
+ */
+function gutenberg_get_theme_content( $content ) {
+	ob_start();
+	get_header();
+	get_footer();
+	$theme_wrapper = ob_get_clean();
+
+	return preg_replace(
+		'/(<body[^>]*>)(.*)<\/body>/s',
+		sprintf( '$1%s</body>', $content ),
+		$theme_wrapper
+	);
+}
+
+/**
  * Returns true if the passed template name is for a dynamic template, or false
  * otherwise. A template is considered dynamic if it is not a file path, and
  * rather the slug of a template post.
@@ -46,7 +67,8 @@ function gutenberg_template_include( $template ) {
 	$template_posts = $template_post_query->get_posts();
 	$template_post  = $template_posts[0];
 
-	echo apply_filters( 'the_content', $template_post->post_content );
+	$content = apply_filters( 'the_content', $template_post->post_content );
+	echo gutenberg_get_theme_content( $content );
 
 	// End of page lifecycle, abort to prevent theme error messages.
 	exit;
