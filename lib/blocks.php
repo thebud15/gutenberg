@@ -155,13 +155,22 @@ function gutenberg_serialize_block( $block ) {
 function gutenberg_render_block( $block ) {
 	$block_name  = isset( $block['blockName'] ) ? $block['blockName'] : null;
 	$attributes  = is_array( $block['attrs'] ) ? $block['attrs'] : array();
+	$inner_blocks = isset( $block['innerBlocks'] ) ? $block['innerBlocks'] : array();
 	$raw_content = isset( $block['innerHTML'] ) ? $block['innerHTML'] : null;
 
 	if ( $block_name ) {
 		$block_type = WP_Block_Type_Registry::get_instance()->get_registered( $block_name );
 		if ( null !== $block_type ) {
-			return $block_type->render( $attributes, $raw_content );
+			return $block_type->render( $attributes, $raw_content, $inner_blocks );
 		}
+	}
+
+	if ( ! empty( $inner_blocks ) ) {
+		$rendered_inner_blocks = implode( ' ', array_map(
+			'gutenberg_render_block',
+			$inner_blocks
+		) );
+		return $rendered_inner_blocks;
 	}
 
 	if ( $raw_content ) {

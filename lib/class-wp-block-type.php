@@ -107,18 +107,28 @@ class WP_Block_Type {
 	 * @param string|null $content    Optional. Raw block content, or null if none set. Default null.
 	 * @return string Rendered block type output.
 	 */
-	public function render( $attributes = array(), $content = null ) {
+	public function render( $attributes = array(), $content = null, $inner_blocks = array() ) {
 		if ( ! is_callable( $this->render_callback ) ) {
 			if ( ! $content ) {
 				return '';
 			}
+
+			// Should we render inner blocks by default if a block is
+			// registered on the server but doesn't define `render_callback`?
+			//
+			// if ( ! empty( $inner_blocks ) ) {
+			//     return implode( ' ', array_map(
+			//         'gutenberg_render_block',
+			//         $inner_blocks
+			//     ) );
+			// }
 
 			return $content;
 		}
 
 		$attributes = $this->prepare_attributes_for_render( $attributes );
 
-		return call_user_func( $this->render_callback, $attributes, $content );
+		return call_user_func( $this->render_callback, $attributes, $content, $inner_blocks );
 	}
 
 	/**
