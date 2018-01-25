@@ -13,7 +13,6 @@ import {
 	find,
 	defer,
 	noop,
-	get,
 } from 'lodash';
 import { nodeListToReact } from 'dom-react';
 import 'element-closest';
@@ -23,7 +22,7 @@ import 'element-closest';
  */
 import { createElement, Component, renderToString } from '@wordpress/element';
 import { keycodes, createBlobURL } from '@wordpress/utils';
-import { Slot, Fill, withAPIData } from '@wordpress/components';
+import { Slot, Fill } from '@wordpress/components';
 
 /**
  * Internal dependencies
@@ -73,7 +72,7 @@ function getFormatProperties( formatName, parents ) {
 
 const DEFAULT_FORMATS = [ 'bold', 'italic', 'strikethrough', 'link' ];
 
-export class Editable extends Component {
+export default class Editable extends Component {
 	constructor( props ) {
 		super( ...arguments );
 
@@ -372,7 +371,7 @@ export class Editable extends Component {
 			plainText: this.pastedPlainText,
 			mode,
 			tagName: this.props.tagName,
-			allowIframes: get( this.props.user, 'data.capabilities.unfiltered_html', false ),
+			allowIframes: this.context.unfilteredHTML,
 		} );
 
 		if ( typeof content === 'string' ) {
@@ -903,13 +902,10 @@ export class Editable extends Component {
 
 Editable.contextTypes = {
 	onUndo: noop,
+	unfilteredHTML: noop,
 };
 
 Editable.defaultProps = {
 	formattingControls: DEFAULT_FORMATS,
 	formatters: [],
 };
-
-export default withAPIData( () => ( {
-	user: `/wp/v2/users/me?context=edit`,
-} ) )( Editable );
