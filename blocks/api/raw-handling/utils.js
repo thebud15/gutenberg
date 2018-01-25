@@ -31,6 +31,11 @@ const inlineWhitelist = {
 	br: {},
 };
 
+const inlineBlockWhiteList = {
+	img: { attributes: [ 'src', 'alt' ], classes: [ 'alignleft', 'aligncenter', 'alignright', 'alignnone' ] },
+	iframe: { attributes: [ 'src', 'allowfullscreen', 'height', 'width' ] },
+};
+
 const inlineWrapperWhiteList = {
 	figcaption: {},
 	h1: {},
@@ -39,7 +44,7 @@ const inlineWrapperWhiteList = {
 	h4: {},
 	h5: {},
 	h6: {},
-	p: { children: [ 'img' ] },
+	p: {},
 	li: { children: [ 'ul', 'ol', 'li' ] },
 	pre: {},
 	td: {},
@@ -49,7 +54,7 @@ const inlineWrapperWhiteList = {
 const whitelist = {
 	...inlineWhitelist,
 	...inlineWrapperWhiteList,
-	img: { attributes: [ 'src', 'alt' ], classes: [ 'alignleft', 'aligncenter', 'alignright', 'alignnone' ] },
+	...inlineBlockWhiteList,
 	figure: {},
 	blockquote: {},
 	hr: {},
@@ -60,7 +65,6 @@ const whitelist = {
 	tfoot: {},
 	tbody: {},
 	tr: {},
-	iframe: { attributes: [ 'src', 'allowfullscreen', 'height', 'width' ] },
 };
 
 export function isWhitelisted( element ) {
@@ -109,6 +113,10 @@ export function isClassWhitelisted( tag, name ) {
 		whitelist[ tag ].classes &&
 		whitelist[ tag ].classes.indexOf( name ) !== -1
 	);
+}
+
+export function isInlineBlock( node ) {
+	return !! inlineBlockWhiteList[ node.nodeName.toLowerCase() ];
 }
 
 export function isInlineWrapper( node ) {

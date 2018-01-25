@@ -22,6 +22,7 @@ import imageCorrector from './image-corrector';
 import blockquoteNormaliser from './blockquote-normaliser';
 import tableNormaliser from './table-normaliser';
 import inlineContentConverter from './inline-content-converter';
+import inlineBlockCorrector from './inline-block-corrector';
 import { deepFilterHTML, isInvalidInline, isNotWhitelisted, isPlain, isInline } from './utils';
 import shortcodeConverter from './shortcode-converter';
 
@@ -124,8 +125,9 @@ export default function rawHandler( { HTML, plainText = '', mode = 'AUTO', tagNa
 			formattingTransformer,
 			stripAttributes,
 			commentRemover,
-			createUnwrapper( isNotWhitelisted ),
 			...iframeUnwrapper,
+			inlineBlockCorrector,
+			createUnwrapper( isNotWhitelisted ),
 			blockquoteNormaliser,
 			tableNormaliser,
 			inlineContentConverter,
