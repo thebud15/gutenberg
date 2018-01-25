@@ -13,6 +13,7 @@ import {
 	find,
 	defer,
 	noop,
+	get,
 } from 'lodash';
 import { nodeListToReact } from 'dom-react';
 import 'element-closest';
@@ -22,7 +23,7 @@ import 'element-closest';
  */
 import { createElement, Component, renderToString } from '@wordpress/element';
 import { keycodes, createBlobURL } from '@wordpress/utils';
-import { Slot, Fill, withContext } from '@wordpress/components';
+import { Slot, Fill, withAPIData } from '@wordpress/components';
 
 /**
  * Internal dependencies
@@ -371,7 +372,7 @@ export class Editable extends Component {
 			plainText: this.pastedPlainText,
 			mode,
 			tagName: this.props.tagName,
-			allowIframes: this.props.unfilteredHTML,
+			allowIframes: get( this.props.user, 'data.capabilities.unfiltered_html', false ),
 		} );
 
 		if ( typeof content === 'string' ) {
@@ -909,8 +910,6 @@ Editable.defaultProps = {
 	formatters: [],
 };
 
-export default withContext( 'editor' )(
-	( settings ) => ( {
-		unfilteredHTML: settings && settings.unfilteredHTML,
-	} )
-)( Editable );
+export default withAPIData( () => ( {
+	user: `/wp/v2/users/me?context=edit`,
+} ) )( Editable );

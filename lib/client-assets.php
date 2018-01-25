@@ -804,6 +804,7 @@ function gutenberg_editor_scripts_and_styles( $hook ) {
 
 	// Preload common data.
 	$preload_paths = array(
+		'/wp/v2/users/me?context=edit',
 		sprintf( '/wp/v2/users/me?post_type=%s&context=edit', $post_type ),
 		'/wp/v2/taxonomies?context=edit',
 		gutenberg_get_rest_link( $post_to_edit, 'about', 'edit' ),
@@ -893,7 +894,6 @@ function gutenberg_editor_scripts_and_styles( $hook ) {
 		'colors'           => $color_palette,
 		'blockTypes'       => $allowed_block_types,
 		'titlePlaceholder' => apply_filters( 'enter_title_here', __( 'Add title', 'gutenberg' ), $post ),
-		'unfilteredHTML'   => current_user_can( 'unfiltered_html' ),
 	);
 
 	$post_type_object = get_post_type_object( $post_to_edit['type'] );
