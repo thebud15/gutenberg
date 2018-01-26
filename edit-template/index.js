@@ -19,7 +19,6 @@ import {
 	Inserter,
 	MultiBlocksSwitcher,
 	NavigableToolbar,
-	PostPreviewButton,
 	PostPublishButton,
 	PostTitle,
 } from '@wordpress/editor';
@@ -53,13 +52,11 @@ const applyLayoutConnect = connect(
 	} ),
 	undefined,
 	undefined,
-	// Temporary:
 	{ storeKey: 'edit-template' }
 );
 
 const Layout = applyLayoutConnect( ( { showSidebar } ) => (
 	<div className="edit-post-layout">
-		{ /*<UnsavedChangesWarning /> */ }
 		<Header />
 		<div className="edit-post-layout__content" role="region" aria-label={ __( 'Editor content' ) } tabIndex="-1">
 			<EditorNotices />
@@ -102,9 +99,7 @@ const Header = applyHeaderConnect( ( props ) => {
 				<MultiBlocksSwitcher />
 			</NavigableToolbar>
 			<div className="edit-post-header__settings">
-				<TemplateSavedState />
 				<PostPublishButton />
-				<TemplatePreviewButton />
 				<IconButton
 					icon="admin-generic"
 					label={ __( 'Settings' ) }
@@ -124,11 +119,4 @@ function Sidebar() {
 			</Panel>
 		</div>
 	);
-}
-
-function TemplateSavedState() {
-	return null;
-}
-function TemplatePreviewButton() {
-	return <PostPreviewButton />;
 }
