@@ -14,16 +14,21 @@
  * @return string Theme content with template output injected.
  */
 function gutenberg_get_theme_content( $content ) {
+	// Generate theme header and strip body preceding content
 	ob_start();
 	get_header();
-	get_footer();
-	$theme_wrapper = ob_get_clean();
-
-	return preg_replace(
-		'/(<body[^>]*>)(.*)<\/body>/s',
-		sprintf( '$1%s</body>', $content ),
-		$theme_wrapper
+	$header = preg_replace(
+		'/(<body[^>]*>)(.*)/s',
+		'$1',
+		ob_get_clean()
 	);
+
+	// Generate WordPress footer content
+	ob_start();
+	wp_footer();
+	$footer = ob_get_clean();
+
+	return $header . $content . $footer;
 }
 
 /**
