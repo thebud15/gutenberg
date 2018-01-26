@@ -1,9 +1,14 @@
 /**
+ * External dependencies
+ */
+import { get } from 'lodash';
+
+/**
  * WordPress dependencies
  */
+import { compose } from '@wordpress/element';
 import { __ } from '@wordpress/i18n';
-import { PanelBody, PanelColor } from '@wordpress/components';
-
+import { PanelBody, PanelColor, withAPIData } from '@wordpress/components';
 
 /**
  * Internal dependencies
@@ -13,6 +18,20 @@ import BlockControls from '../../block-controls';
 import ColorPalette from '../../color-palette';
 import InspectorControls from '../../inspector-controls';
 import RangeControl from '../../inspector-controls/range-control';
+
+const withSiteTitle = compose(
+	withAPIData( () => ( {
+		options: '/',
+	} ) ),
+	( Component ) => (
+		( { options, ...props } ) => (
+			<Component
+				{ ...props }
+				siteTitle={ get( options.data, [ 'name' ] ) }
+			/>
+		)
+	)
+);
 
 export const name = 'core/site-title';
 
@@ -31,7 +50,7 @@ export const settings = {
 		html: false,
 	},
 
-	edit( { attributes, focus, setAttributes } ) {
+	edit: withSiteTitle( ( { attributes, focus, setAttributes, siteTitle } ) => {
 		const { align, backgroundColor, className, fontSize, textColor } = attributes;
 		const style = {
 			backgroundColor: backgroundColor,
@@ -78,11 +97,16 @@ export const settings = {
 				key="heading"
 				className={ className }
 				style={ style }
-			>{ __( 'Site title goes here.' ) }</h1>,
+			>
+				{ siteTitle || __( 'Site title goes here.' ) }
+			</h1>,
 		];
-	},
+	} ),
 
 	save() {
+		// TODO: May be better to save cached known site title as fallback in
+		// the case that removal of the block at a later date is still useful
+		// in static post content markup.
 		return null;
 	},
 };
