@@ -1,4 +1,9 @@
 /**
+ * External dependencies
+ */
+import { connect } from 'react-redux';
+
+/**
  * WordPress dependencies
  */
 import { Panel, PanelBody } from '@wordpress/components';
@@ -8,19 +13,39 @@ import {
 	PostTaxonomies as PostTaxonomiesForm,
 } from '@wordpress/editor';
 
-function Sidebar() {
+/**
+ * Internal dependencies
+ */
+import SidebarHeader from './header';
+import { getActivePanel } from '../../store/selectors';
+
+function Sidebar( { panel } ) {
 	return (
 		<div className="edit-post-sidebar">
 			<Panel>
-				<PostTaxonomiesCheck>
-					<PanelBody>
-						<PostTaxonomiesForm />
+				<SidebarHeader />
+				{ panel === 'template' && (
+					<PostTaxonomiesCheck>
+						<PanelBody>
+							<PostTaxonomiesForm />
+						</PanelBody>
+					</PostTaxonomiesCheck>
+				) }
+				{ panel === 'block' && (
+					<PanelBody className="edit-post-block-inspector-panel">
+						<BlockInspector />
 					</PanelBody>
-				</PostTaxonomiesCheck>
-				<BlockInspector />
+				) }
 			</Panel>
 		</div>
 	);
 }
 
-export default Sidebar;
+export default connect(
+	( state ) => ( {
+		panel: getActivePanel( state ),
+	} ),
+	undefined,
+	undefined,
+	{ storeKey: 'edit-template' }
+)( Sidebar );

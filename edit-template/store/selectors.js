@@ -33,3 +33,14 @@ export function getPreference( state, preferenceKey, defaultValue ) {
 export function isSidebarOpened( state ) {
 	return getPreference( state, 'sidebar' );
 }
+
+/**
+ * Returns the current active panel for the sidebar.
+ *
+ * @param {Object} state Global application state.
+ *
+ * @returns {string} Active sidebar panel.
+ */
+export function getActivePanel( state ) {
+	return state.panel;
+}

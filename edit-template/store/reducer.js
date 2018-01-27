@@ -24,6 +24,16 @@ export function preferences( state = { sidebar: false }, action ) {
 	return state;
 }
 
+export function panel( state = 'template', action ) {
+	switch ( action.type ) {
+		case 'SET_ACTIVE_PANEL':
+			return action.panel;
+	}
+
+	return state;
+}
+
 export default combineReducers( {
 	preferences,
+	panel,
 } );
