@@ -120,6 +120,7 @@ JS;
 	wp_add_inline_script( 'wp-edit-template', $script );
 
 	wp_enqueue_script( 'wp-edit-template' );
+	wp_enqueue_editor();
 	gutenberg_extend_wp_api_backbone_client();
 	wp_enqueue_style( 'wp-edit-post' );
 	?>
