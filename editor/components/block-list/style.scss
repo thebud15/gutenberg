@@ -423,7 +423,8 @@
 		position: absolute;
 		top: 50%;
 		left: 50%;
-		margin: -14px 0 0 -14px;
+		transform: translate( -50%, -50% );
+		margin: 0;
 	}
 
 	.editor-inserter__toggle {
