@@ -91,12 +91,7 @@ export function getSaveContent( blockType, attributes, innerBlocks ) {
 	}
 
 	// Otherwise, infer as element
-	let content = renderToString( saveElement );
-
-	// Drop raw HTML wrappers (support dangerous inner HTML without wrapper)
-	content = content.replace( /<\/?wp-raw-html>/g, '' );
-
-	return content;
+	return renderToString( saveElement );
 }
 
 /**

@@ -1,7 +1,7 @@
 /**
  * WordPress dependencies
  */
-import { Component } from '@wordpress/element';
+import { Component, DangerousHTML } from '@wordpress/element';
 
 /**
  * Internal dependencies
@@ -33,7 +33,7 @@ class BlockContentProvider extends Component {
 				const html = serialize( innerBlocks );
 
 				// Use special-cased raw HTML tag to avoid default escaping
-				return <wp-raw-html dangerouslySetInnerHTML={ { __html: html } } />;
+				return <DangerousHTML>{ html }</DangerousHTML>;
 			},
 		};
 	}
