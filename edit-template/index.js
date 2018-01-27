@@ -1,35 +1,19 @@
 /**
  * External dependencies
  */
-import { connect, createProvider } from 'react-redux';
+import { createProvider } from 'react-redux';
 
 /**
  * WordPress dependencies
  */
+import { EditorProvider } from '@wordpress/editor';
 import { render } from '@wordpress/element';
-import { IconButton, Popover, Panel } from '@wordpress/components';
-import {
-	BlockInspector,
-	BlockList,
-	DefaultBlockAppender,
-	EditorHistoryRedo,
-	EditorHistoryUndo,
-	EditorNotices,
-	EditorProvider,
-	Inserter,
-	MultiBlocksSwitcher,
-	NavigableToolbar,
-	PostPublishButton,
-	PostTitle,
-} from '@wordpress/editor';
-import { __ } from '@wordpress/i18n';
 
 /**
  * Internal dependencies
  */
 import store from './store';
-import { toggleSidebar } from './store/actions';
-import { isSidebarOpened } from './store/selectors';
+import Layout from './components/layout';
 
 export function initializeEditor( id, post, settings ) {
 	const target = document.getElementById( id );
@@ -46,77 +30,3 @@ export function initializeEditor( id, post, settings ) {
 	);
 }
 
-const applyLayoutConnect = connect(
-	( state ) => ( {
-		showSidebar: isSidebarOpened( state ),
-	} ),
-	undefined,
-	undefined,
-	{ storeKey: 'edit-template' }
-);
-
-const Layout = applyLayoutConnect( ( { showSidebar } ) => (
-	<div className="edit-post-layout">
-		<Header />
-		<div className="edit-post-layout__content" role="region" aria-label={ __( 'Editor content' ) } tabIndex="-1">
-			<EditorNotices />
-			<div className="edit-post-layout__editor">
-				<div className="edit-post-visual-editor">
-					<PostTitle />
-					<BlockList showContextualToolbar={ true } />
-					<DefaultBlockAppender />
-				</div>
-			</div>
-		</div>
-		{ showSidebar && <Sidebar /> }
-		<Popover.Slot />
-	</div>
-) );
-
-const applyHeaderConnect = connect(
-	( state ) => ( {
-		isSidebarOpened: isSidebarOpened( state ),
-	} ),
-	{ toggleSidebar },
-	undefined,
-	{ storeKey: 'edit-template' }
-);
-const Header = applyHeaderConnect( ( props ) => {
-	return (
-		<div
-			role="region"
-			aria-label={ __( 'Editor toolbar' ) }
-			className="edit-post-header"
-			tabIndex="-1"
-		>
-			<NavigableToolbar
-				className="edit-post-header-toolbar"
-				aria-label={ __( 'Editor Toolbar' ) }
-			>
-				<Inserter position="bottom right" />
-				<EditorHistoryUndo />
-				<EditorHistoryRedo />
-				<MultiBlocksSwitcher />
-			</NavigableToolbar>
-			<div className="edit-post-header__settings">
-				<PostPublishButton />
-				<IconButton
-					icon="admin-generic"
-					label={ __( 'Settings' ) }
-					isToggled={ props.isSidebarOpened }
-					onClick={ props.toggleSidebar }
-				/>
-			</div>
-		</div>
-	);
-} );
-
-function Sidebar() {
-	return (
-		<div className="edit-post-sidebar">
-			<Panel>
-				<BlockInspector />
-			</Panel>
-		</div>
-	);
-}
